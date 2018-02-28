@@ -1,28 +1,13 @@
 from user import User
 
 users = [
-    {
-        'id': 1,
-        'username': 'bob',
-        'password': 'omg'
-    }
+    User(1, 'bob', 'omg987')
 ]
 
-username_mapping = { 'bob': {
-        'id': 1,
-        'username': 'bob',
-        'password': 'omg'
-    }
-}
+username_mapping = { u.username: u for u in users }
+userid_mapping = { u.id: u for u in users }
 
-userid_mapping = { 1: {
-        'id': 1,
-        'username': 'bob',
-        'password': 'omg'
-    }
-}
-
-authenticate(username, password):
+def authenticate(username, password):
     user = username_mapping.get(username, None)
     if user and user.password == password:
         return user
