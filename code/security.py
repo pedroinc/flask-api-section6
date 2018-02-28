@@ -1,3 +1,5 @@
+from user import User
+
 users = [
     {
         'id': 1,
