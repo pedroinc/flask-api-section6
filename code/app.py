@@ -7,17 +7,20 @@ app = Flask(__name__)
 app.secret_key = 'dontask'
 api = Api(app)
 
-jwt = JWT(app, authenticate, identity) # /auth
+# creates a new endpoint: /auth
+jwt = JWT(app, authenticate, identity)
 
 items = []
 
 class Item(Resource):
+
     @jwt_required()
     def get(self, name):
         # lambda function
         item = next(filter(lambda x: x['name'] == name, items), None)
-        return {'item': None }, 200 if item else 404
+        return {'item': item }, 200 if item else 404
 
+    # @jwt_required()
     def post(self, name):
         if next(filter(lambda x: x['name'] == name, items), None) is not None:
             #bad request - status code 400
@@ -27,6 +30,12 @@ class Item(Resource):
         item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201
+
+    # @jwt_required()
+    def delete(self, name):
+        global items
+        items = list(filter(lambda x: x['name'] != name, items))
+        return {'message', 'Item deleted'}
 
 class ItemList(Resource):
     def get(self):
