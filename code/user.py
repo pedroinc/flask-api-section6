@@ -1,7 +1,10 @@
 import sqlite3
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 class User:
+
+    database_file = 'my_database.db'
+
     def __init__(self, _id, username, password):
         self.id = _id
         self.username = username
@@ -9,7 +12,7 @@ class User:
 
     @classmethod
     def find_by_username(cls, username):
-        connection = sqlite3.connect('my_database.db')
+        connection = sqlite3.connect(User.database_file)
         cursor = connection.cursor()
 
         query = "select * from users where username = ?"
@@ -25,7 +28,7 @@ class User:
 
     @classmethod
     def find_by_id(cls, _id):
-        connection = sqlite3.connect('data.db')
+        connection = sqlite3.connect(User.database_file)
         cursor = connection.cursor()
 
         query = "select * from users where id = ?"
@@ -40,12 +43,27 @@ class User:
         return user
 
 class UserRegister(Resource):
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('username',
+        type=str,
+        required=True,
+        help="This field cannot be left blank."
+    )
+    parser.add_argument('password',
+        type=str,
+        required=True,
+        help="This field cannot be left blank."
+    )
+
     def post(self):
-        connection = sqlite3.connect('my_database')
+        data = UserRegister.parser.parse_args()
+
+        connection = sqlite3.connect(User.database_file)
         cursor = connection.cursor()
 
         query = "INSERT INTO users VALUES (NULL, ?, ?)"
-        cursor.execute(query, data['username'], data['password']))
+        cursor.execute(query, (data['username'], data['password']))
 
         connection.commit()
         connection.close()
