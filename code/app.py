@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 from security import authenticate, identity
+from user import UserRegister
 
 app = Flask(__name__)
 app.secret_key = 'dontask'
@@ -26,7 +27,7 @@ class Item(Resource):
     #     help="This field cannot be left blank"
     # )
 
-    # @jwt_required()
+    @jwt_required()
     def get(self, name):
         # lambda function
         item = next(filter(lambda x: x['name'] == name, items), None)
@@ -68,5 +69,6 @@ class ItemList(Resource):
 
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
+api.add_resource(UserRegister, '/register')
 
 app.run(port=5000, debug=True)

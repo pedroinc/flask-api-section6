@@ -1,5 +1,5 @@
 import sqlite3
-
+from flask_restful import Resource
 
 class User:
     def __init__(self, _id, username, password):
@@ -8,8 +8,8 @@ class User:
         self.password = password
 
     @classmethod
-    def find_by_username(self, username):
-        connection = sqlite3.connect('data.db')
+    def find_by_username(cls, username):
+        connection = sqlite3.connect('my_database.db')
         cursor = connection.cursor()
 
         query = "select * from users where username = ?"
@@ -24,7 +24,7 @@ class User:
         return user
 
     @classmethod
-    def find_by_id(self, _id):
+    def find_by_id(cls, _id):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -38,3 +38,16 @@ class User:
 
         connection.close()
         return user
+
+class UserRegister(Resource):
+    def post(self):
+        connection = sqlite3.connect('my_database')
+        cursor = connection.cursor()
+
+        query = "INSERT INTO users VALUES (NULL, ?, ?)"
+        cursor.execute(query, data['username'], data['password']))
+
+        connection.commit()
+        connection.close()
+
+        return {"message": "User created successfully."}, 201
