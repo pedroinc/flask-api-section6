@@ -90,9 +90,9 @@ class Item(Resource):
     #create or update existing items
     # @jwt_required()
     def put(self, name):
-        data = parser.parse_args()
+        data = Item.parser.parse_args()
 
-        item = self.find_by_name(name):
+        item = self.find_by_name(name)
         updated_item = {'name': name, 'price': data['price']}
 
         if item is None:
@@ -115,11 +115,11 @@ class ItemList(Resource):
 
         query = "SELECT * FROM items"
         result = cursor.execute(query)
-        rows = result.fetchall()
-        connection.close()
-
+        # rows = result.fetchall()
         items = []
-        for row in rows:
-            items.append({'item': {'name': row[0], 'price': row[1] } })
+        for row in result:
+            items.append( {'name': row[0], 'price': row[1] })
+
+        connection.close()
 
         return {'items': items}, 200
