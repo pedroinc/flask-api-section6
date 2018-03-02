@@ -26,9 +26,6 @@ class Item(Resource):
     #     help="This field cannot be left blank"
     # )
 
-    def __init__()
-        self._msg_required_field = "This field cannot be left blank"
-
     # @jwt_required()
     def get(self, name):
         # lambda function
