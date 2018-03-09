@@ -1,7 +1,8 @@
 import sqlite3
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
-
+from common.utils import Utils
+from models.item import ItemModel
 
 class Item(Resource):
 
@@ -16,57 +17,22 @@ class Item(Resource):
 
     @jwt_required()
     def get(self, name):
-        item = self.find_by_name(name)
+        item = ItemModel.find_by_name(name)
         if item:
-            return item
+            return item.json()
         return {'message': 'Item not found'}, 404
-
-    @classmethod
-    def find_by_name(cls, name):
-        connection = sqlite3.connect(Item.database_file)
-        cursor = connection.cursor()
-
-        query = "SELECT * FROM items WHERE name = ?"
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-
-        if row:
-            return {'item': {'name': row[0], 'price': row[1] } }, 200
-
-    @classmethod
-    def insert(cls, item):
-        connection = sqlite3.connect(Item.database_file)
-        cursor = connection.cursor()
-
-        query = "INSERT INTO items VALUES (?, ?)"
-        cursor.execute(query, (item['name'], item['price']))
-
-        connection.commit()
-        connection.close()
-
-    @classmethod
-    def update(cls, item):
-        connection = sqlite3.connect(Item.database_file)
-        cursor = connection.cursor()
-
-        query = "UPDATE items SET price = ? WHERE name = ?"
-        cursor.execute(query, (item['price'], item['name']))
-
-        connection.commit()
-        connection.close()
 
     # @jwt_required()
     def post(self, name):
-        if self.find_by_name(name):
+        if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists".format(name)}, 400 #bad req status code
 
         data = Item.parser.parse_args()
 
-        item = {'name': name, 'price': data['price']}
+        item = ItemModel(name, data['price'])
 
         try:
-            self.insert(item)
+            ItemModel.insert(item)
         except:
             return {"message": "error while inserting the item."}, 500 # internal server error
 
@@ -74,10 +40,10 @@ class Item(Resource):
 
     # @jwt_required()
     def delete(self, name):
-        if not self.find_by_name(name):
+        if not ItemModel.find_by_name(name):
             return {'message': "Item not found"}, 404 #not found
 
-        connection = sqlite3.connect(Item.database_file)
+        connection = sqlite3.connect(Utils.DATABASE_FILE)
         cursor = connection.cursor()
         query = "DELETE FROM items WHERE name = ?"
         cursor.execute(query, (name,))
@@ -87,26 +53,26 @@ class Item(Resource):
 
         return {'message': 'Item deleted'}
 
-    #create or update existing items
-    # @jwt_required()
-    def put(self, name):
+    def put(self, name): #create or update existing items
         data = Item.parser.parse_args()
 
-        item = self.find_by_name(name)
-        updated_item = {'name': name, 'price': data['price']}
+        item = ItemModel.find_by_name(name)
+        
+        updated_item = ItemModel(name, data['price'])
 
         if item is None:
             try:
-                self.insert(updated_item)
+                updated_item.insert()
             except:
                 return {"message": "error occurred while inserting the item."}, 500 # internal server error
         else:
             try:
-                self.update(updated_item)
+                updated_item.update()
             except:
                 return {"message": "error occurred while updating the item."}, 500 # internal server error
 
         return updated_item
+
 
 class ItemList(Resource):
     def get(self):
