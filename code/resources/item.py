@@ -1,8 +1,8 @@
 import sqlite3
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
-from common.utils import Utils
 from models.item import ItemModel
+from common.utils import Utils
 
 class Item(Resource):
 
@@ -36,7 +36,7 @@ class Item(Resource):
         except:
             return {"message": "error while inserting the item."}, 500 # internal server error
 
-        return item, 201
+        return item.json(), 201
 
     # @jwt_required()
     def delete(self, name):
@@ -70,7 +70,7 @@ class Item(Resource):
             except:
                 return {"message": "error occurred while updating the item."}, 500 # internal server error
 
-        return updated_item
+        return updated_item.json()
 
 
 class ItemList(Resource):
