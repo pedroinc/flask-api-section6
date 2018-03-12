@@ -21,22 +21,10 @@ class ItemModel(db.Model):
         return cls.query.filter_by(name=name).first()
         # return ItemModel.query.filter_by(name=name).first()
 
-    def insert(self):
-        connection = sqlite3.connect(Utils.DATABASE_FILE)
-        cursor = connection.cursor()
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
-        query = "INSERT INTO items VALUES (?, ?)"
-        cursor.execute(query, (self.name, self.price))
-
-        connection.commit()
-        connection.close()
-
-    def update(self):
-        connection = sqlite3.connect(Item.database_file)
-        cursor = connection.cursor()
-
-        query = "UPDATE items SET price = ? WHERE name = ?"
-        cursor.execute(query, (self.price, self.name))
-
-        connection.commit()
-        connection.close()
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.sesssion.commit()
