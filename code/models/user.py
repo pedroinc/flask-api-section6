@@ -1,8 +1,13 @@
 import sqlite3
+from common.utils import Utils
+from db import db
 
-class UserModel:
-    
-    database_file = 'my_database.db'
+class UserModel(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80))
+    password = db.Column(db.String(80))
 
     def __init__(self, _id, username, password):
         self.id = _id
@@ -11,7 +16,7 @@ class UserModel:
 
     @classmethod
     def find_by_username(cls, username):
-        connection = sqlite3.connect(User.database_file)
+        connection = sqlite3.connect(Utils.DATABASE_FILE)
         cursor = connection.cursor()
 
         query = "select * from users where username = ?"
@@ -27,7 +32,7 @@ class UserModel:
 
     @classmethod
     def find_by_id(cls, _id):
-        connection = sqlite3.connect(User.database_file)
+        connection = sqlite3.connect(Utils.DATABASE_FILE)
         cursor = connection.cursor()
 
         query = "select * from users where id = ?"
