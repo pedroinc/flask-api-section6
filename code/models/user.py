@@ -1,5 +1,3 @@
-import sqlite3
-from common.utils import Utils
 from db import db
 
 class UserModel(db.Model):
