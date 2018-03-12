@@ -40,7 +40,7 @@ class Item(Resource):
 
     @jwt_required()
     def delete(self, name):
-        item = ItemModel.find_by_name(name):
+        item = ItemModel.find_by_name(name)
 
         if item:
             ItemModel.delete_from_db()
