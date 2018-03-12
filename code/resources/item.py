@@ -43,12 +43,11 @@ class Item(Resource):
     @jwt_required()
     def delete(self, name):
         item = ItemModel.find_by_name(name)
-
         if item:
-            ItemModel.delete_from_db()
+            item.delete_from_db()
             return {'message': 'Item deleted'}
-        else:
-            return {'message': "Item not found"}, 404 #not found
+
+        return {'message': "Item not found"}, 404 #not found
 
     @jwt_required()
     def put(self, name): #create or update existing items

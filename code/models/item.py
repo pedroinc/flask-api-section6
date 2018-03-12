@@ -29,4 +29,4 @@ class ItemModel(db.Model):
 
     def delete_from_db(self):
         db.session.delete(self)
-        db.sesssion.commit()
+        db.session.commit()
