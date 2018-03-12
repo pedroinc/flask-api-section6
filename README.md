@@ -1,2 +1,2 @@
-# flask-api-section5
-Udemy flask api course - section 5
+# flask-api-section6
+Udemy flask api course - section 6
