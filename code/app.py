@@ -8,6 +8,7 @@ from resources.item import Item, ItemList
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///my_database.db'
 app.secret_key = 'dontask'
 api = Api(app)
 
