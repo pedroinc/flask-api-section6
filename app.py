@@ -6,11 +6,11 @@ from security import authenticate, identity
 from resources.user import UserRegister
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
-from resources.common import Utils
+from common.utils import Utils
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///my_database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{0}'.format(Utils.DATABASE_FILE)
 app.secret_key = 'dontask'
 api = Api(app)
 
