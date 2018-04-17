@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
@@ -10,7 +12,7 @@ from common.utils import Utils
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{0}'.format(Utils.DATABASE_FILE)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///{0}'.format(Utils.DATABASE_FILE))
 app.secret_key = 'dontask'
 api = Api(app)
 
